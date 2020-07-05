@@ -2,8 +2,8 @@
 
 #include "game.h"
 
-int p_hand = 0;
-int b_hand = 0;
+
+int p_hand;
 
 int main()
 {
@@ -15,36 +15,52 @@ int main()
 
 void game_loop(t_game * g)
 {
-print_player_coins(g->player);
-broker_new_hand(g);
-player_new_hand(g);
-print_player_hand(g->player);
-broker_place_bet(g);
-player_place_bet(g); 
-sum_player_hand(g->player);
-print_turn_results(g, p_hand);
 
+  int i;
+  i = 0;
+  while ( 1 >=0 && i <= 5 )
+  {
+    
+   print_player_coins(g->player);
+   broker_new_hand(g);
+   player_new_hand(g);
+   print_player_hand(g->player);
+   broker_place_bet(g);
+   player_place_bet(g);
+   player_ask_cards(g);
+   sum_player_hand(g->player);
+   p_hand = sum_player_hand(g->player);
+   print_turn_results(g, p_hand);
+   
+   if (p_hand>21)
+   {
+     player_lost(g);
+     player_breakthrough(g);
+   }
+   if (p_hand == 21)
+   {
+     player_win(g);
+     player_jackpot(g);
+   }
+   if (p_hand> g->broker && p_hand<21)
 
-if (p_hand > 21)
-{
-  player_breakthrough(g);
-  player_lost(g);
-}
-
-if (p_hand == 21)
-{
-  player_jackpot(g);
-  player_win(g);
-}
-
-if (p_hand > b_hand)
-{
-    player_win(g);
-}
-
-if (p_hand < b_hand)
-{
-    player_lost(g);
-}
-player_ask_cards(g);
+   {
+     player_win(g);
+   }
+   if (p_hand< g->broker)
+   {
+    player_lost(g); 
+   }
+   if (player_ask_cards(g) ==6 && p_hand<21)
+   {
+     player_win(g);
+   }
+   
+   i++;
+  }
+  printf ("It's done");
+  if (i == 5)
+  {
+    printf (" You won bro.");
+  }
 }
